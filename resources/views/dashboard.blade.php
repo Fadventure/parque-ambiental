@@ -31,7 +31,7 @@
                     <div class="text-xs text-gray-400">con sensores activos</div>
                 </div>
             </div>
-
+            
             <!-- Últimas alertas -->
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6 mb-8">
                 <h3 class="font-semibold text-lg mb-4">Últimas alertas</h3>
