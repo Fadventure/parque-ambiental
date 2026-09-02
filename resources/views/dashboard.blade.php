@@ -1,85 +1,116 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Panel principal') }}
+            Panel principal
         </h2>
     </x-slot>
 
-    <div class="py-12">
+    <div class="py-8">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <!-- Grid de tarjetas de resumen -->
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-                <!-- Emergencias activas -->
-                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6 border-l-4 border-red-500">
-                    <div class="text-sm text-gray-500">EMERGENCIAS ACTIVAS</div>
-                    <div class="text-3xl font-bold text-red-600">3</div>
+
+            {{-- TARJETAS RESUMEN --}}
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+
+                <div class="bg-white rounded-lg shadow-sm border-l-4 border-red-500 p-5">
+                    <p class="text-xs font-semibold text-gray-500 tracking-wide">EMERGENCIAS ACTIVAS</p>
+                    <p class="text-3xl font-bold text-gray-900 mt-1">{{ $emergenciasActivas ?? 3 }}</p>
                 </div>
-                <!-- Total alertas hoy -->
-                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6 border-l-4 border-yellow-500">
-                    <div class="text-sm text-gray-500">TOTAL ALERTAS HOY</div>
-                    <div class="text-3xl font-bold text-yellow-600">2</div>
+
+                <div class="bg-white rounded-lg shadow-sm border-l-4 border-yellow-400 p-5">
+                    <p class="text-xs font-semibold text-gray-500 tracking-wide">TOTAL ALERTAS HOY</p>
+                    <p class="text-3xl font-bold text-gray-900 mt-1">{{ $alertasHoy ?? 2 }}</p>
                 </div>
-                <!-- No atendidas -->
-                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6 border-l-4 border-gray-500">
-                    <div class="text-sm text-gray-500">NO ATENDIDAS</div>
-                    <div class="text-3xl font-bold text-gray-600">3</div>
+
+                <div class="bg-white rounded-lg shadow-sm border-l-4 border-gray-500 p-5">
+                    <p class="text-xs font-semibold text-gray-500 tracking-wide">NO ATENDIDAS</p>
+                    <p class="text-3xl font-bold text-gray-900 mt-1">{{ $noAtendidas ?? 3 }}</p>
                 </div>
-                <!-- Zonas monitoreadas -->
-                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6 border-l-4 border-green-500">
-                    <div class="text-sm text-gray-500">ZONAS MONITOREADAS</div>
-                    <div class="text-3xl font-bold text-green-600">5</div>
-                    <div class="text-xs text-gray-400">con sensores activos</div>
-                </div>
-            </div>
-            
-            <!-- Últimas alertas -->
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6 mb-8">
-                <h3 class="font-semibold text-lg mb-4">Últimas alertas</h3>
-                <div class="space-y-3">
-                    <div class="flex items-start gap-3 p-3 bg-red-50 rounded-lg border-l-4 border-red-500">
-                        <span class="text-red-500 font-bold">⚠️</span>
-                        <div>
-                            <p class="font-medium text-red-700">Temperatura crítica: 42°C detectada en sector norte</p>
-                            <p class="text-sm text-gray-500">Invernadero B · Sensor Arduino</p>
-                        </div>
-                        <span class="ml-auto text-xs text-gray-400">08:14</span>
-                    </div>
-                    <div class="flex items-start gap-3 p-3 bg-yellow-50 rounded-lg border-l-4 border-yellow-500">
-                        <span class="text-yellow-500 font-bold">⚡</span>
-                        <div>
-                            <p class="font-medium text-yellow-700">Humedad por debajo del umbral mínimo (38%)</p>
-                            <p class="text-sm text-gray-500">Hidroponía · Sensor Arduino</p>
-                        </div>
-                        <span class="ml-auto text-xs text-gray-400">07:52</span>
-                    </div>
+
+                <div class="bg-white rounded-lg shadow-sm border-l-4 border-green-500 p-5">
+                    <p class="text-xs font-semibold text-gray-500 tracking-wide">ZONAS MONITOREADAS</p>
+                    <p class="text-3xl font-bold text-gray-900 mt-1">{{ $zonasMonitoreadas ?? 5 }}</p>
+                    <p class="text-xs text-gray-400 mt-1">con sensores activos</p>
                 </div>
             </div>
 
-            <!-- Tabla de emergencias (simulada) -->
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6">
-                <h3 class="font-semibold text-lg mb-4">Emergencias recientes</h3>
-                <table class="min-w-full divide-y divide-gray-200">
+            {{-- ULTIMAS ALERTAS --}}
+            <div class="bg-white rounded-lg shadow-sm p-6 mb-8">
+                <h2 class="text-base font-semibold text-gray-900 mb-4">Últimas alertas</h2>
+
+                <div class="space-y-3">
+                    @forelse($ultimasAlertas ?? [] as $alerta)
+                        <div class="flex items-start justify-between rounded-md border-l-4 p-4
+                                    {{ $alerta->tipo === 'critica' ? 'bg-red-50 border-red-400' : 'bg-yellow-50 border-yellow-400' }}">
+                            <div>
+                                <p class="text-sm font-medium {{ $alerta->tipo === 'critica' ? 'text-red-700' : 'text-yellow-700' }}">
+                                    {{ $alerta->mensaje }}
+                                </p>
+                                <p class="text-xs text-gray-500 mt-1">{{ $alerta->zona }} · {{ $alerta->origen }}</p>
+                            </div>
+                            <span class="text-xs text-gray-400 whitespace-nowrap ml-4">{{ $alerta->hora }}</span>
+                        </div>
+                    @empty
+                        <div class="flex items-start justify-between rounded-md border-l-4 border-red-400 bg-red-50 p-4">
+                            <div>
+                                <p class="text-sm font-medium text-red-700">Temperatura crítica: 42°C detectada en sector norte</p>
+                                <p class="text-xs text-gray-500 mt-1">Invernadero B · Sensor Arduino</p>
+                            </div>
+                            <span class="text-xs text-gray-400 whitespace-nowrap ml-4">08:14</span>
+                        </div>
+                        <div class="flex items-start justify-between rounded-md border-l-4 border-yellow-400 bg-yellow-50 p-4">
+                            <div>
+                                <p class="text-sm font-medium text-yellow-700">Humedad por debajo del umbral mínimo (38%)</p>
+                                <p class="text-xs text-gray-500 mt-1">Hidroponía · Sensor Arduino</p>
+                            </div>
+                            <span class="text-xs text-gray-400 whitespace-nowrap ml-4">07:52</span>
+                        </div>
+                    @endforelse
+                </div>
+            </div>
+
+            {{-- EMERGENCIAS RECIENTES --}}
+            <div class="bg-white rounded-lg shadow-sm p-6">
+                <h2 class="text-base font-semibold text-gray-900 mb-4">Emergencias recientes</h2>
+
+                <table class="w-full text-sm">
                     <thead>
-                        <tr>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Tipo</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Estado</th>
-                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Fecha</th>
+                        <tr class="text-left text-xs text-gray-500 border-b border-gray-100">
+                            <th class="pb-3 font-medium">TIPO</th>
+                            <th class="pb-3 font-medium">ESTADO</th>
+                            <th class="pb-3 font-medium">FECHA</th>
                         </tr>
                     </thead>
-                    <tbody class="divide-y divide-gray-200">
-                        <tr>
-                            <td class="px-6 py-4 text-sm text-gray-900">🔥 Emergencia</td>
-                            <td class="px-6 py-4"><span class="px-2 py-1 text-xs rounded-full bg-red-100 text-red-800">No atendido</span></td>
-                            <td class="px-6 py-4 text-sm text-gray-500">2026-09-01 08:14</td>
-                        </tr>
-                        <tr>
-                            <td class="px-6 py-4 text-sm text-gray-900">📋 Normal</td>
-                            <td class="px-6 py-4"><span class="px-2 py-1 text-xs rounded-full bg-green-100 text-green-800">Atendido</span></td>
-                            <td class="px-6 py-4 text-sm text-gray-500">2026-09-01 07:52</td>
-                        </tr>
+                    <tbody class="divide-y divide-gray-100">
+                        @forelse($emergenciasRecientes ?? [] as $llamado)
+                            <tr>
+                                <td class="py-3 flex items-center gap-2">
+                                    {{ $llamado->tipo === 'emergencia' ? '🔥' : '📋' }}
+                                    {{ ucfirst($llamado->tipo) }}
+                                </td>
+                                <td class="py-3">
+                                    <span class="px-2 py-1 rounded-full text-xs
+                                        {{ $llamado->atendido ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700' }}">
+                                        {{ $llamado->atendido ? 'Atendido' : 'No atendido' }}
+                                    </span>
+                                </td>
+                                <td class="py-3 text-gray-500">{{ $llamado->fecha }}</td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td class="py-3 flex items-center gap-2">🔥 Emergencia</td>
+                                <td class="py-3"><span class="px-2 py-1 rounded-full text-xs bg-red-100 text-red-700">No atendido</span></td>
+                                <td class="py-3 text-gray-500">2026-09-01 08:14</td>
+                            </tr>
+                            <tr>
+                                <td class="py-3 flex items-center gap-2">📋 Normal</td>
+                                <td class="py-3"><span class="px-2 py-1 rounded-full text-xs bg-green-100 text-green-700">Atendido</span></td>
+                                <td class="py-3 text-gray-500">2026-09-01 07:52</td>
+                            </tr>
+                        @endforelse
                     </tbody>
                 </table>
             </div>
+
         </div>
     </div>
 </x-app-layout>

@@ -2,6 +2,13 @@
 
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ZonaController;
+use App\Http\Controllers\AlertaController;
+
+Route::resource('zonas', ZonaController::class);
+
+Route::get('/alertas', [AlertaController::class, 'index'])->name('alertas.index');
+Route::post('/alertas/{alerta}/atender', [AlertaController::class, 'atender'])->name('alertas.atender');
 
 Route::get('/', function () {
     return redirect('/login');
