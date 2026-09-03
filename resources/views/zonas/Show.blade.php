@@ -35,7 +35,7 @@
                             </form>
                         </div>
                     @endif
-
+                </div>
                 <p class="text-sm text-gray-500 mb-1">
                     Administrador: {{ $zona->administrador->name ?? 'Sin asignar' }}
                 </p>
