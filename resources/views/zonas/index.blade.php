@@ -24,7 +24,7 @@
                             <span class="w-2.5 h-2.5 rounded-full {{ $zona->tiene_alerta ? 'bg-red-500' : 'bg-green-500' }}"></span>
                         </div>
 
-                        <p class="text-xs text-gray-500 mb-1">Administrador: {{ $zona->administrador->nombre ?? '—' }}</p>
+                        <p class="text-xs text-gray-500 mb-1">Administrador: {{ $zona->administrador->name ?? '—' }}</p>
                         <p class="text-xs text-gray-500 mb-4">Empleados asignados: {{ $zona->empleados_count ?? 0 }}</p>
 
                         <div class="grid grid-cols-2 gap-2 text-sm mb-4">
