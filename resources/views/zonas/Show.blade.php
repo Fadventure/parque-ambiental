@@ -46,11 +46,11 @@
                 <div class="grid grid-cols-2 gap-4">
                     <div class="bg-gray-50 rounded-lg p-4">
                         <p class="text-xs text-gray-400 mb-1">Humedad actual</p>
-                        <p class="text-2xl font-bold text-gray-900">{{ $zona->humedad ?? '--' }}%</p>
+                        <p class="text-2xl font-bold text-gray-900" id="valor-humedad">{{ $zona->humedad ?? '--' }}%</p>
                     </div>
                     <div class="bg-gray-50 rounded-lg p-4">
                         <p class="text-xs text-gray-400 mb-1">Temperatura actual</p>
-                        <p class="text-2xl font-bold text-gray-900">{{ $zona->temperatura ?? '--' }}°C</p>
+                        <p class="text-2xl font-bold text-gray-900" id="valor-temperatura">{{ $zona->temperatura ?? '--' }}°C</p>
                     </div>
                 </div>
             </div>
@@ -63,4 +63,23 @@
 
         </div>
     </div>
+    @push('scripts')
+        <script>
+            const zonaId = {{ $zona->id }};
+
+            async function actualizarLecturas() {
+                try {
+                    const res = await fetch(`/api/zonas/${zonaId}`);
+                    const data = await res.json();
+
+                    document.getElementById('valor-humedad').innerText = data.humedad + '%';
+                    document.getElementById('valor-temperatura').innerText = data.temperatura + '°C';
+                } catch (e) {
+                    console.error('Error actualizando lecturas', e);
+                }
+            }
+
+            setInterval(actualizarLecturas, 10000); // cada 10 segundos
+        </script>
+    @endpush
 </x-app-layout>
