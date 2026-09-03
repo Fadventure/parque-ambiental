@@ -7,14 +7,14 @@
 
     <div class="py-8">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-
+            @if(auth()->user()->esAdmin())
             <div class="flex justify-end mb-4">
                 <a href="{{ route('zonas.create') }}"
                    class="bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium px-4 py-2 rounded-md">
                     + Nueva zona
                 </a>
             </div>
-
+            @endif
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
 
                 @forelse($zonas ?? [] as $zona)
