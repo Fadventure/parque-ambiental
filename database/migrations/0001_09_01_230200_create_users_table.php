@@ -20,6 +20,11 @@ return new class extends Migration
             $table->rememberToken();
             $table->timestamps();
             $table->enum('rol', ['admin', 'empleado'])->default('empleado');
+            $table->foreignId('zona_id')->nullable();
+            $table->string('telefono')->nullable();
+            $table->string('direccion')->nullable();
+            $table->date('fecha_contratacion')->nullable();
+            $table->string('tarea')->nullable();
         });
 
         Schema::create('password_reset_tokens', function (Blueprint $table) {
@@ -36,6 +41,7 @@ return new class extends Migration
             $table->longText('payload');
             $table->integer('last_activity')->index();
         });
+
     }
 
     /**

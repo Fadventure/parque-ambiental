@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('llamados', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('area_id')->constrained('areas')->onDelete('cascade');
-            $table->foreignId('empleado_id')->constrained('empleados')->onDelete('cascade');
+            $table->foreignId('zona_id')->constrained('zonas')->onDelete('cascade');
+            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
             $table->enum('tipo', ['Normal', 'Emergencia']);
             $table->enum('estado', ['Pendiente', 'Atendido'])->default('Pendiente');
             $table->text('descripcion');

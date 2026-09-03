@@ -23,6 +23,11 @@ class User extends Authenticatable
         'email',
         'password',
         'rol',
+        'zona_id',
+        'telefono',
+        'direccion',
+        'fecha_contratacion',
+        'tarea',
     ];
 
     /**
@@ -56,5 +61,10 @@ class User extends Authenticatable
     public function empleado()
     {
         return $this->hasOne(Empleado::class);
+    }
+
+    public function zona()
+    {
+        return $this->belongsTo(Zona::class);
     }
 }

@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Empleado;
 use App\Models\User;
 use App\Models\Zona;
 use Illuminate\Http\Request;
@@ -11,11 +10,11 @@ use Illuminate\Support\Facades\Hash;
 class EmpleadoController extends Controller
 {
     /**
-     * Listar todos los empleados.
+     * Listar todos los empleados (usuarios con rol empleado).
      */
     public function index()
     {
-        $empleados = Empleado::with(['user', 'zona'])->get();
+        $empleados = User::with('zona')->where('rol', 'empleado')->get();
         return view('empleados.index', compact('empleados'));
     }
 
@@ -44,17 +43,12 @@ class EmpleadoController extends Controller
             'fecha_contratacion' => 'nullable|date',
         ]);
 
-        // Crear el usuario
-        $user = User::create([
+        // Crear el usuario con todos los campos
+        User::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
-            'rol' => 'empleado'
-        ]);
-
-        // Crear el empleado asociado
-        Empleado::create([
-            'user_id' => $user->id,
+            'rol' => 'empleado',
             'zona_id' => $request->zona_id,
             'telefono' => $request->telefono,
             'direccion' => $request->direccion,
@@ -69,16 +63,16 @@ class EmpleadoController extends Controller
     /**
      * Mostrar un empleado específico.
      */
-    public function show(Empleado $empleado)
+    public function show(User $empleado)
     {
-        $empleado->load(['user', 'zona']);
+        $empleado->load('zona');
         return view('empleados.show', compact('empleado'));
     }
 
     /**
      * Mostrar formulario para editar un empleado.
      */
-    public function edit(Empleado $empleado)
+    public function edit(User $empleado)
     {
         $zonas = Zona::all();
         return view('empleados.edit', compact('empleado', 'zonas'));
@@ -87,11 +81,11 @@ class EmpleadoController extends Controller
     /**
      * Actualizar un empleado.
      */
-    public function update(Request $request, Empleado $empleado)
+    public function update(Request $request, User $empleado)
     {
         $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users,email,' . $empleado->user_id,
+            'email' => 'required|string|email|max:255|unique:users,email,' . $empleado->id,
             'zona_id' => 'required|exists:zonas,id',
             'tarea' => 'required|string|max:255',
             'telefono' => 'nullable|string|max:20',
@@ -100,26 +94,21 @@ class EmpleadoController extends Controller
             'password' => 'nullable|string|min:8|confirmed'
         ]);
 
-        // Actualizar usuario
         $userData = [
             'name' => $request->name,
             'email' => $request->email,
+            'zona_id' => $request->zona_id,
+            'telefono' => $request->telefono,
+            'direccion' => $request->direccion,
+            'fecha_contratacion' => $request->fecha_contratacion,
+            'tarea' => $request->tarea,
         ];
 
         if ($request->filled('password')) {
             $userData['password'] = Hash::make($request->password);
         }
 
-        $empleado->user->update($userData);
-
-        // Actualizar empleado
-        $empleado->update([
-            'zona_id' => $request->zona_id,
-            'telefono' => $request->telefono,
-            'direccion' => $request->direccion,
-            'fecha_contratacion' => $request->fecha_contratacion,
-            'tarea' => $request->tarea,
-        ]);
+        $empleado->update($userData);
 
         return redirect()->route('empleados.index')
             ->with('success', 'Empleado actualizado exitosamente.');
@@ -128,10 +117,9 @@ class EmpleadoController extends Controller
     /**
      * Eliminar un empleado.
      */
-    public function destroy(Empleado $empleado)
+    public function destroy(User $empleado)
     {
-        // Eliminar el usuario asociado (cascade eliminará el empleado)
-        $empleado->user->delete();
+        $empleado->delete();
 
         return redirect()->route('empleados.index')
             ->with('success', 'Empleado eliminado exitosamente.');
