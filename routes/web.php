@@ -4,6 +4,7 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ZonaController;
 use App\Http\Controllers\AlertaController;
+use App\Http\Controllers\EmpleadoController;
 
 Route::middleware('auth')->group(function () {
     Route::get('/zonas', [ZonaController::class, 'index'])->name('zonas.index');
@@ -14,6 +15,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/zonas/{zona}/edit', [ZonaController::class, 'edit'])->name('zonas.edit');
         Route::put('/zonas/{zona}', [ZonaController::class, 'update'])->name('zonas.update');
         Route::delete('/zonas/{zona}', [ZonaController::class, 'destroy'])->name('zonas.destroy');
+        Route::resource('empleados', EmpleadoController::class);
     });
 
     Route::get('/zonas/{zona}', [ZonaController::class, 'show'])->name('zonas.show');

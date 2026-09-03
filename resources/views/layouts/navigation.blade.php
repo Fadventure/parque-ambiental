@@ -20,6 +20,10 @@
                         {{ __('Zonas') }}
                     </x-nav-link>
 
+                    <x-nav-link :href="route('empleados.index')" :active="request()->routeIs('empleados.*')">
+                        {{ __('Empleados') }}
+                    </x-nav-link>
+
                     <x-nav-link :href="route('alertas.index')" :active="request()->routeIs('alertas.*')">
                         {{ __('Alertas y emergencias') }}
                     </x-nav-link>
@@ -81,6 +85,10 @@
 
             <x-responsive-nav-link :href="route('zonas.index')" :active="request()->routeIs('zonas.*')">
                 {{ __('Zonas') }}
+            </x-responsive-nav-link>
+            
+            <x-responsive-nav-link :href="route('empleados.index')" :active="request()->routeIs('empleados.*')">
+                {{ __('Empleados') }}
             </x-responsive-nav-link>
 
             <x-responsive-nav-link :href="route('alertas.index')" :active="request()->routeIs('alertas.*')">
