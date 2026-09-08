@@ -33,6 +33,50 @@
                 </div>
             </div>
 
+            {{-- 🚨 BOTONES DE LLAMADA DE EMERGENCIA --}}
+            <div class="bg-white rounded-lg shadow-sm p-6 mb-8">
+                <h2 class="text-base font-semibold text-red-600 mb-4">🚨 Llamada de Emergencia</h2>
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                    
+                    <!-- 911 -->
+                    <a href="tel:911" 
+                       class="group block bg-red-50 hover:bg-red-100 border-2 border-red-200 hover:border-red-400 rounded-lg p-4 text-center transition duration-150">
+                        <div class="text-3xl mb-2">🚨</div>
+                        <div class="text-sm font-medium text-gray-700">Emergencias</div>
+                        <div class="text-2xl font-bold text-red-600 group-hover:text-red-800">911</div>
+                        <div class="text-xs text-gray-400 mt-1">Toca para llamar</div>
+                    </a>
+
+                    <!-- 100 -->
+                    <a href="tel:100" 
+                       class="group block bg-orange-50 hover:bg-orange-100 border-2 border-orange-200 hover:border-orange-400 rounded-lg p-4 text-center transition duration-150">
+                        <div class="text-3xl mb-2">🔥</div>
+                        <div class="text-sm font-medium text-gray-700">Bomberos</div>
+                        <div class="text-2xl font-bold text-orange-600 group-hover:text-orange-800">100</div>
+                        <div class="text-xs text-gray-400 mt-1">Toca para llamar</div>
+                    </a>
+
+                    <!-- 107 -->
+                    <a href="tel:107" 
+                       class="group block bg-green-50 hover:bg-green-100 border-2 border-green-200 hover:border-green-400 rounded-lg p-4 text-center transition duration-150">
+                        <div class="text-3xl mb-2">🚑</div>
+                        <div class="text-sm font-medium text-gray-700">SAME</div>
+                        <div class="text-2xl font-bold text-green-600 group-hover:text-green-800">107</div>
+                        <div class="text-xs text-gray-400 mt-1">Toca para llamar</div>
+                    </a>
+
+                    <!-- 103 -->
+                    <a href="tel:103" 
+                       class="group block bg-blue-50 hover:bg-blue-100 border-2 border-blue-200 hover:border-blue-400 rounded-lg p-4 text-center transition duration-150">
+                        <div class="text-3xl mb-2">🛡️</div>
+                        <div class="text-sm font-medium text-gray-700">Defensa Civil</div>
+                        <div class="text-2xl font-bold text-blue-600 group-hover:text-blue-800">103</div>
+                        <div class="text-xs text-gray-400 mt-1">Toca para llamar</div>
+                    </a>
+
+                </div>
+            </div>
+
             {{-- ULTIMAS ALERTAS --}}
             <div class="bg-white rounded-lg shadow-sm p-6 mb-8">
                 <h2 class="text-base font-semibold text-gray-900 mb-4">Últimas alertas</h2>
