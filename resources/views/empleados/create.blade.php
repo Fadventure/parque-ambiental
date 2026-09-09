@@ -5,7 +5,7 @@
 @section('content')
 <div class="max-w-2xl mx-auto">
     <div class="bg-white rounded-lg shadow p-6">
-        <h2 class="text-xl font-bold text-gray-800 mb-6">📝 Crear Nuevo Empleado</h2>
+        <h2 class="text-xl font-bold text-gray-800 mb-6">Agregar Nuevo Empleado</h2>
 
         <form action="{{ route('empleados.store') }}" method="POST">
             @csrf

@@ -22,7 +22,7 @@ class DatabaseSeeder extends Seeder
 
         // 3. CREAR LAS 3 ZONAS QUE NECESITAS
         $zonas = [
-            'Invernaderos' => ['humedad' => 65, 'temperatura' => 22],
+            'Invernadero' => ['humedad' => 65, 'temperatura' => 22],
             'Hidroponía' => ['humedad' => 45, 'temperatura' => 18],
             'Mantenimiento' => ['humedad' => 50, 'temperatura' => 16],
         ];
