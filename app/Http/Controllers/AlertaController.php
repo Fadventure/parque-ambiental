@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Llamado;
 use App\Models\Zona;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 
 class AlertaController extends Controller
@@ -13,9 +14,8 @@ class AlertaController extends Controller
      */
     public function index(Request $request)
     {
-        $zonas = Zona::all(); // para el filtro del <select>
+        $zonas = Zona::all();
 
-        // 🔽 CONSULTA CON FILTROS PARA EL HISTORIAL
         $alertas = Llamado::with(['zona', 'usuario'])
             ->when($request->zona_id, function ($query) use ($request) {
                 return $query->where('zona_id', $request->zona_id);
@@ -31,19 +31,6 @@ class AlertaController extends Controller
             })
             ->latest()
             ->get();
-
-        /* ============================================
-           🟢 CÓDIGO PARA ARDUINO (guardado para después)
-           ============================================ */
-        // Cuando tengas el modelo Alerta, sería algo así:
-        // $alertas = Alerta::query()
-        //     ->when($request->zona, fn($q) => $q->where('zona_id', $request->zona))
-        //     ->when($request->tipo, fn($q) => $q->where('tipo', $request->tipo))
-        //     ->when($request->estado === 'atendido', fn($q) => $q->where('atendido', true))
-        //     ->when($request->estado === 'no_atendido', fn($q) => $q->where('atendido', false))
-        //     ->when($request->fecha, fn($q) => $q->whereDate('created_at', $request->fecha))
-        //     ->latest()
-        //     ->get();
 
         return view('alertas.index', compact('zonas', 'alertas'));
     }
@@ -79,8 +66,6 @@ class AlertaController extends Controller
         $alerta = Llamado::findOrFail($id);
         $alerta->update(['estado' => 'Atendido']);
 
-        // Alerta::findOrFail($id)->update(['atendido' => true]); // ← para Arduino
-
         return redirect()->route('alertas.index')
             ->with('success', 'Alerta marcada como atendida.');
     }
@@ -97,6 +82,41 @@ class AlertaController extends Controller
             ->with('success', 'Alerta eliminada.');
     }
 
+    /**
+     * Exportar alertas a PDF.
+     */
+    public function exportarPDF(Request $request)
+    {
+        $alertas = Llamado::with(['zona', 'usuario'])
+            ->when($request->zona_id, function ($query) use ($request) {
+                return $query->where('zona_id', $request->zona_id);
+            })
+            ->when($request->tipo, function ($query) use ($request) {
+                return $query->where('tipo', $request->tipo);
+            })
+            ->when($request->estado, function ($query) use ($request) {
+                return $query->where('estado', $request->estado);
+            })
+            ->when($request->fecha, function ($query) use ($request) {
+                return $query->whereDate('created_at', $request->fecha);
+            })
+            ->latest()
+            ->get();
+
+        $totalAlertas = $alertas->count();
+        $emergencias = $alertas->where('tipo', 'Emergencia')->count();
+        $atendidas = $alertas->where('estado', 'Atendido')->count();
+
+        $pdf = Pdf::loadView('alertas.pdf', compact(
+            'alertas',
+            'totalAlertas',
+            'emergencias',
+            'atendidas'
+        ));
+
+        return $pdf->download('reporte_alertas_' . date('Y-m-d') . '.pdf');
+    }
+
     /* ============================================
        🟢 MÉTODOS PARA ARDUINO (API)
        ============================================ */
@@ -106,7 +126,6 @@ class AlertaController extends Controller
      */
     public function recibirDesdeArduino(Request $request)
     {
-        // Validar datos del Arduino
         $request->validate([
             'zona_id' => 'required|exists:zonas,id',
             'tipo' => 'required|in:Normal,Emergencia',
@@ -115,16 +134,14 @@ class AlertaController extends Controller
             'humedad' => 'nullable|numeric',
         ]);
 
-        // Guardar la alerta
         $alerta = Llamado::create([
             'zona_id' => $request->zona_id,
-            'user_id' => null, // Viene del sensor, no de un usuario
+            'user_id' => null,
             'tipo' => $request->tipo,
             'estado' => 'Pendiente',
             'descripcion' => $request->descripcion,
         ]);
 
-        // Actualizar temperatura y humedad en la zona (opcional)
         if ($request->has('temperatura') || $request->has('humedad')) {
             $zona = Zona::find($request->zona_id);
             if ($zona) {
@@ -158,21 +175,4 @@ class AlertaController extends Controller
             'alertas' => $alertas
         ]);
     }
-
-    /* ============================================
-       🟢 CUANDO TENGAS EL MODELO ALERTA (Arduino)
-       ============================================ */
-    // public function recibirDesdeArduino(Request $request)
-    // {
-    //     $alerta = Alerta::create([
-    //         'zona_id' => $request->zona_id,
-    //         'tipo' => $request->tipo,
-    //         'descripcion' => $request->descripcion,
-    //         'atendido' => false,
-    //         'temperatura' => $request->temperatura,
-    //         'humedad' => $request->humedad,
-    //     ]);
-
-    //     return response()->json(['success' => true, 'alerta' => $alerta]);
-    // }
 }

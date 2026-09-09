@@ -4,10 +4,18 @@
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
                 Alertas y Emergencias
             </h2>
-            <button onclick="document.getElementById('modalAlerta').classList.remove('hidden')" 
-                    class="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-lg transition">
-                + Nueva Alerta
-            </button>
+            <div class="flex gap-2">
+                {{-- BOTÓN EXPORTAR PDF --}}
+                <a href="{{ route('alertas.pdf', request()->all()) }}" 
+                   class="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-lg transition">
+                    📄 Exportar PDF
+                </a>
+                {{-- BOTÓN NUEVA ALERTA --}}
+                <button onclick="document.getElementById('modalAlerta').classList.remove('hidden')" 
+                        class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg transition">
+                    + Nueva Alerta
+                </button>
+            </div>
         </div>
     </x-slot>
 
@@ -60,7 +68,7 @@
                 </a>
             </form>
 
-            {{-- 🔹 AGREGADO: MOSTRAR FILTROS ACTIVOS --}}
+            {{-- MOSTRAR FILTROS ACTIVOS --}}
             @if(request()->filled('zona_id') || request()->filled('tipo') || request()->filled('estado') || request()->filled('fecha'))
                 <div class="bg-blue-50 border border-blue-200 text-blue-700 px-4 py-2 rounded-md mb-4 text-sm flex items-center justify-between">
                     <span>
@@ -88,7 +96,6 @@
             <div class="bg-white rounded-lg shadow-sm overflow-hidden">
                 <table class="w-full text-sm">
                     <thead class="bg-gray-50">
-                        {{-- 🔹 AGREGADO: CONTADOR DE ALERTAS --}}
                         <caption class="text-left text-xs text-gray-400 px-6 py-2">
                             {{ $alertas->count() }} alertas encontradas
                         </caption>
@@ -108,7 +115,7 @@
                                 <td class="px-6 py-3">
                                     <span class="px-2 py-1 rounded-full text-xs font-semibold
                                         {{ $alerta->tipo == 'Emergencia' ? 'bg-red-100 text-red-700' : 'bg-blue-100 text-blue-700' }}">
-                                        {{ $alerta->tipo == 'Emergencia' ? '🔥 Emergencia' : '📋 Normal' }}
+                                        {{ $alerta->tipo == 'Emergencia' ? 'Emergencia' : 'Normal' }}
                                     </span>
                                 </td>
                                 <td class="px-6 py-3 text-gray-700">{{ $alerta->zona->nombre ?? 'N/A' }}</td>

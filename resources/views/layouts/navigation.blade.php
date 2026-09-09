@@ -20,17 +20,25 @@
                         {{ __('Zonas') }}
                     </x-nav-link>
 
+                    @auth
+                        @if(auth()->user()->rol === 'admin')
                     <x-nav-link :href="route('empleados.index')" :active="request()->routeIs('empleados.*')">
                         {{ __('Empleados') }}
                     </x-nav-link>
+                        @endif
+                    @endauth
 
                     <x-nav-link :href="route('alertas.index')" :active="request()->routeIs('alertas.*')">
                         {{ __('Alertas y emergencias') }}
                     </x-nav-link>
 
+                    @auth
+                        @if(auth()->user()->rol === 'admin')
                     <x-nav-link :href="route('reportes.index')" :active="request()->routeIs('reportes.*')">
                         {{ __('Reportes') }}
                     </x-nav-link>
+                        @endif
+                    @endauth
                 </div>
             </div>
 
@@ -100,7 +108,7 @@
             </x-responsive-nav-link>
 
             <x-responsive-nav-link :href="route('reportes.index')" :active="request()->routeIs('reportes.*')">
-                {{ __('📊 Reportes') }}
+                {{ __('Reportes') }}
             </x-responsive-nav-link>
         </div>
 

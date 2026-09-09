@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Llamado;
 use App\Models\Zona;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -36,6 +37,33 @@ class ReporteController extends Controller
             'datosGraficos',
             'detalleLlamados'
         ));
+    }
+
+    /**
+     * Exportar reporte a PDF.
+     */
+    public function exportarPDF(Request $request)
+    {
+        // Obtener los mismos datos que en el index
+        $totalLlamados = Llamado::count();
+        $totalEmergencias = Llamado::where('tipo', 'Emergencia')->count();
+        $totalAtendidos = Llamado::where('estado', 'Atendido')->count();
+        $porcentajeAtendidos = $totalLlamados > 0 
+            ? round(($totalAtendidos / $totalLlamados) * 100) 
+            : 0;
+
+        $detalleLlamados = $this->obtenerDetalleLlamados($request);
+        $datosGraficos = $this->obtenerDatosGraficos($request);
+
+        $pdf = Pdf::loadView('reportes.pdf', compact(
+            'totalLlamados',
+            'totalEmergencias',
+            'porcentajeAtendidos',
+            'detalleLlamados',
+            'datosGraficos'
+        ));
+
+        return $pdf->download('reporte_alertas_' . date('Y-m-d') . '.pdf');
     }
 
     private function obtenerDatosGraficos(Request $request)
@@ -115,6 +143,6 @@ class ReporteController extends Controller
             $query->where('estado', $request->estado);
         }
 
-        return $query->take(20)->get();
+        return $query->take(50)->get();
     }
 }
