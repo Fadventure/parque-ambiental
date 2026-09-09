@@ -25,6 +25,16 @@
                 </div>
             </div>
 
+            {{-- CHECKBOX PARA ROL ADMIN --}}
+            <div class="mb-4">
+                <label class="flex items-center gap-2 cursor-pointer">
+                    <input type="checkbox" name="es_admin" id="es_admin" value="1" {{ old('es_admin') ? 'checked' : '' }}
+                           class="w-5 h-5 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
+                    <span class="text-m font-medium text-gray-700">Es Administrador</span>
+                </label>
+                @error('es_admin') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
+            </div>
+
             <div class="grid grid-cols-2 gap-4 mb-4">
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Contraseña *</label>
@@ -97,15 +107,16 @@
     </div>
 </div>
 
-{{-- 👇 SCRIPT PARA DROPDOWN DINÁMICO DE TAREAS --}}
+{{-- 👇 SCRIPT COMPLETO --}}
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     const zonaSelect = document.getElementById('zona_id');
     const tareaSelect = document.getElementById('tarea');
+    const esAdminCheckbox = document.getElementById('es_admin');
 
-    // 👇 TRABAJOS POR ZONA (hardcodeados)
+    // 👇 TRABAJOS POR ZONA
     const trabajosPorZona = {
-        'Invernadero': ['Encargado de cultivos', 'Técnico de riego', 'Operario de mantenimiento'],
+        'Invernaderos': ['Encargado de cultivos', 'Técnico de riego', 'Operario de mantenimiento'],
         'Hidroponía': ['Técnico de hidroponía', 'Operario de bombas', 'Encargado de cultivos'],
         'Mantenimiento': ['Técnico eléctrico', 'Técnico en sistemas y sensores', 'Operario general'],
     };
@@ -128,12 +139,48 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    zonaSelect.addEventListener('change', actualizarTareas);
+    // 👇 FUNCIÓN PARA HABILITAR/DESHABILITAR ZONA Y TAREA
+    function toggleZonaYTarea() {
+        const esAdmin = esAdminCheckbox.checked;
+        
+        // Deshabilitar o habilitar zona
+        zonaSelect.disabled = esAdmin;
+        zonaSelect.classList.toggle('bg-gray-100', esAdmin);
+        zonaSelect.classList.toggle('cursor-not-allowed', esAdmin);
+        
+        // Deshabilitar o habilitar tarea
+        tareaSelect.disabled = esAdmin;
+        tareaSelect.classList.toggle('bg-gray-100', esAdmin);
+        tareaSelect.classList.toggle('cursor-not-allowed', esAdmin);
+        
+        // Si es admin, limpiar los valores
+        if (esAdmin) {
+            zonaSelect.value = '';
+            tareaSelect.innerHTML = '<option value="">Seleccionar una zona primero</option>';
+        } else {
+            // Si no es admin, restaurar el comportamiento normal
+            if (zonaSelect.value) {
+                actualizarTareas();
+            }
+        }
+    }
 
-    // Si hay un valor seleccionado (ej: después de error de validación)
-    if (zonaSelect.value) {
+    // Evento cuando cambia el checkbox
+    esAdminCheckbox.addEventListener('change', toggleZonaYTarea);
+
+    // Evento cuando cambia la zona (solo si no es admin)
+    zonaSelect.addEventListener('change', function() {
+        if (!esAdminCheckbox.checked) {
+            actualizarTareas();
+        }
+    });
+
+    // 👉 Ejecutar al cargar la página (para mantener el estado)
+    toggleZonaYTarea();
+
+    // Si hay una zona seleccionada y no es admin, cargar tareas
+    if (zonaSelect.value && !esAdminCheckbox.checked) {
         actualizarTareas();
-        // Si había una tarea seleccionada previamente, restaurarla
         const tareaAnterior = "{{ old('tarea') }}";
         if (tareaAnterior) {
             tareaSelect.value = tareaAnterior;

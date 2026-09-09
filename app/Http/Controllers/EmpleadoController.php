@@ -36,19 +36,23 @@ class EmpleadoController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:8|confirmed',
-            'zona_id' => 'required|exists:zonas,id',
-            'tarea' => 'required|string|max:255',
+            'es_admin' => 'nullable|boolean', // 👈 AGREGADO
+            'zona_id' => 'nullable|exists:zonas,id', // 👈 CAMBIADO a nullable
+            'tarea' => 'nullable|string|max:255', // 👈 CAMBIADO a nullable
             'telefono' => 'nullable|string|max:20',
             'direccion' => 'nullable|string|max:255',
             'fecha_contratacion' => 'nullable|date',
         ]);
+
+        // 👉 Determinar el rol basado en el checkbox
+        $rol = $request->has('es_admin') ? 'admin' : 'empleado';
 
         // Crear el usuario con todos los campos
         User::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
-            'rol' => 'empleado',
+            'rol' => $rol, // 👈 AHORA USA EL ROL DETERMINADO
             'zona_id' => $request->zona_id,
             'telefono' => $request->telefono,
             'direccion' => $request->direccion,
@@ -86,17 +90,22 @@ class EmpleadoController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users,email,' . $empleado->id,
-            'zona_id' => 'required|exists:zonas,id',
-            'tarea' => 'required|string|max:255',
+            'es_admin' => 'nullable|boolean', // 👈 AGREGADO
+            'zona_id' => 'nullable|exists:zonas,id', // 👈 CAMBIADO a nullable
+            'tarea' => 'nullable|string|max:255', // 👈 CAMBIADO a nullable
             'telefono' => 'nullable|string|max:20',
             'direccion' => 'nullable|string|max:255',
             'fecha_contratacion' => 'nullable|date',
             'password' => 'nullable|string|min:8|confirmed'
         ]);
 
+        // 👉 Determinar el rol basado en el checkbox
+        $rol = $request->has('es_admin') ? 'admin' : 'empleado';
+
         $userData = [
             'name' => $request->name,
             'email' => $request->email,
+            'rol' => $rol, // 👈 AHORA USA EL ROL DETERMINADO
             'zona_id' => $request->zona_id,
             'telefono' => $request->telefono,
             'direccion' => $request->direccion,
