@@ -27,6 +27,10 @@
                     <x-nav-link :href="route('alertas.index')" :active="request()->routeIs('alertas.*')">
                         {{ __('Alertas y emergencias') }}
                     </x-nav-link>
+
+                    <x-nav-link :href="route('reportes.index')" :active="request()->routeIs('reportes.*')">
+                        {{ __('Reportes') }}
+                    </x-nav-link>
                 </div>
             </div>
 
@@ -93,6 +97,10 @@
 
             <x-responsive-nav-link :href="route('alertas.index')" :active="request()->routeIs('alertas.*')">
                 {{ __('Alertas y emergencias') }}
+            </x-responsive-nav-link>
+
+            <x-responsive-nav-link :href="route('reportes.index')" :active="request()->routeIs('reportes.*')">
+                {{ __('📊 Reportes') }}
             </x-responsive-nav-link>
         </div>
 

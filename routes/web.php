@@ -5,9 +5,12 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ZonaController;
 use App\Http\Controllers\AlertaController;
 use App\Http\Controllers\EmpleadoController;
+use App\Http\Controllers\ReporteController;
 
 Route::middleware('auth')->group(function () {
     Route::get('/zonas', [ZonaController::class, 'index'])->name('zonas.index');
+    Route::get('/reportes', [ReporteController::class, 'index'])->name('reportes.index');
+
 
     Route::middleware('esAdmin')->group(function () {
         Route::get('/zonas/create', [ZonaController::class, 'create'])->name('zonas.create');

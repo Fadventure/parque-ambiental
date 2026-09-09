@@ -138,7 +138,7 @@
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit" class="text-red-500 hover:text-red-700 text-xs" onclick="return confirm('¿Eliminar esta alerta?')">
-                                                🗑️
+                                                🗑️ Eliminar
                                             </button>
                                         </form>
                                     @endif

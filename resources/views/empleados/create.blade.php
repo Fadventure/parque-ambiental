@@ -42,7 +42,7 @@
             <div class="grid grid-cols-2 gap-4 mb-4">
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Zona *</label>
-                    <select name="zona_id" 
+                    <select name="zona_id" id="zona_id"
                             class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required>
                         <option value="">Seleccionar zona</option>
                         @foreach($zonas as $zona)
@@ -55,9 +55,10 @@
                 </div>
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Tarea *</label>
-                    <input type="text" name="tarea" value="{{ old('tarea') }}" 
-                           class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" 
-                           placeholder="Ej: Encargado de cultivos" required>
+                    <select name="tarea" id="tarea"
+                            class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                        <option value="">Seleccionar una zona primero</option>
+                    </select>
                     @error('tarea') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
                 </div>
             </div>
@@ -95,4 +96,49 @@
         </form>
     </div>
 </div>
+
+{{-- 👇 SCRIPT PARA DROPDOWN DINÁMICO DE TAREAS --}}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const zonaSelect = document.getElementById('zona_id');
+    const tareaSelect = document.getElementById('tarea');
+
+    // 👇 TRABAJOS POR ZONA (hardcodeados)
+    const trabajosPorZona = {
+        'Invernadero': ['Encargado de cultivos', 'Técnico de riego', 'Operario de mantenimiento'],
+        'Hidroponía': ['Técnico de hidroponía', 'Operario de bombas', 'Encargado de cultivos'],
+        'Mantenimiento': ['Técnico eléctrico', 'Técnico en sistemas y sensores', 'Operario general'],
+    };
+
+    function actualizarTareas() {
+        const zonaNombre = zonaSelect.options[zonaSelect.selectedIndex]?.text;
+        const tareas = trabajosPorZona[zonaNombre] || [];
+
+        tareaSelect.innerHTML = '<option value="">Seleccionar tarea</option>';
+        
+        if (tareas.length === 0) {
+            tareaSelect.innerHTML += '<option value="">No hay tareas disponibles para esta zona</option>';
+        } else {
+            tareas.forEach(tarea => {
+                const option = document.createElement('option');
+                option.value = tarea;
+                option.textContent = tarea;
+                tareaSelect.appendChild(option);
+            });
+        }
+    }
+
+    zonaSelect.addEventListener('change', actualizarTareas);
+
+    // Si hay un valor seleccionado (ej: después de error de validación)
+    if (zonaSelect.value) {
+        actualizarTareas();
+        // Si había una tarea seleccionada previamente, restaurarla
+        const tareaAnterior = "{{ old('tarea') }}";
+        if (tareaAnterior) {
+            tareaSelect.value = tareaAnterior;
+        }
+    }
+});
+</script>
 @endsection
