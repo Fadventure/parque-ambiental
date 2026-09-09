@@ -21,8 +21,10 @@ Route::middleware('auth')->group(function () {
     Route::get('/zonas/{zona}', [ZonaController::class, 'show'])->name('zonas.show');
 });
 
-Route::get('/alertas', [AlertaController::class, 'index'])->name('alertas.index');
-Route::post('/alertas/{alerta}/atender', [AlertaController::class, 'atender'])->name('alertas.atender');
+    Route::get('/alertas', [AlertaController::class, 'index'])->name('alertas.index');
+    Route::post('/alertas', [AlertaController::class, 'store'])->name('alertas.store');
+    Route::put('/alertas/{id}/atender', [AlertaController::class, 'atender'])->name('alertas.atender');
+    Route::delete('/alertas/{id}', [AlertaController::class, 'destroy'])->name('alertas.destroy');
 
 Route::get('/', function () {
     return redirect('/login');
