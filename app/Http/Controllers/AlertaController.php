@@ -83,7 +83,7 @@ class AlertaController extends Controller
     }
 
     /**
-     * Exportar alertas a PDF.
+     * Exportar alertas a PDF con información detallada.
      */
     public function exportarPDF(Request $request)
     {
@@ -107,14 +107,18 @@ class AlertaController extends Controller
         $emergencias = $alertas->where('tipo', 'Emergencia')->count();
         $atendidas = $alertas->where('estado', 'Atendido')->count();
 
+        // Obtener información del usuario que genera el reporte
+        $usuarioReporte = auth()->user();
+
         $pdf = Pdf::loadView('alertas.pdf', compact(
             'alertas',
             'totalAlertas',
             'emergencias',
-            'atendidas'
+            'atendidas',
+            'usuarioReporte'
         ));
 
-        return $pdf->download('reporte_alertas_' . date('Y-m-d') . '.pdf');
+        return $pdf->download('reporte_alertas_' . date('Y-m-d_H-i') . '.pdf');
     }
 
     /* ============================================

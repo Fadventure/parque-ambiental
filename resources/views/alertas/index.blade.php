@@ -8,7 +8,7 @@
                 {{-- BOTÓN EXPORTAR PDF --}}
                 <a href="{{ route('alertas.pdf', request()->all()) }}" 
                    class="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-lg transition">
-                    📄 Exportar PDF
+                    Exportar a PDF
                 </a>
                 {{-- BOTÓN NUEVA ALERTA --}}
                 <button onclick="document.getElementById('modalAlerta').classList.remove('hidden')" 
