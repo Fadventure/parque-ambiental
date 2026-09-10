@@ -19,21 +19,26 @@ Route::get('/dashboard', function () {
 // RUTAS DE AUTENTICACIÓN
 // ============================================
 Route::middleware('auth')->group(function () {
+    
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-// ============================================
+/// ============================================
 // RUTAS DE ZONAS
 // ============================================
 Route::middleware('auth')->group(function () {
     Route::get('/zonas', [ZonaController::class, 'index'])->name('zonas.index');
-    Route::get('/zonas/{zona}', [ZonaController::class, 'show'])->name('zonas.show');
 
     Route::middleware('esAdmin')->group(function () {
         Route::get('/zonas/create', [ZonaController::class, 'create'])->name('zonas.create');
         Route::post('/zonas', [ZonaController::class, 'store'])->name('zonas.store');
+    });
+
+    Route::get('/zonas/{zona}', [ZonaController::class, 'show'])->name('zonas.show');
+
+    Route::middleware('esAdmin')->group(function () {
         Route::get('/zonas/{zona}/edit', [ZonaController::class, 'edit'])->name('zonas.edit');
         Route::put('/zonas/{zona}', [ZonaController::class, 'update'])->name('zonas.update');
         Route::delete('/zonas/{zona}', [ZonaController::class, 'destroy'])->name('zonas.destroy');

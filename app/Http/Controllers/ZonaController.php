@@ -10,6 +10,8 @@ class ZonaController extends Controller
 {
     public function index()
     {
+                error_log("/zonas (get)");
+
         $zonas = Zona::all();
 
         return view('zonas.index', compact('zonas'));
@@ -17,8 +19,9 @@ class ZonaController extends Controller
 
     public function create()
     {
+        error_log("ENTRO A LA FUNCION CREATE");
         $administradores = User::where('rol', 'admin')->get();
-
+        error_log("ejecuto consulta");
         return view('zonas.create', compact('administradores'));
     }
 
@@ -38,6 +41,8 @@ class ZonaController extends Controller
 
     public function show(string $id)
     {
+                error_log("ENTRO A LA FUNCjjdsjgsldW");
+
         $zona = Zona::findOrFail($id);
 
         return view('zonas.show', compact('zona'));
@@ -53,6 +58,9 @@ class ZonaController extends Controller
 
     public function update(Request $request, string $id)
     {
+
+            error_log("ENTRO A LA FUNCION update");
+
         $zona = Zona::findOrFail($id);
 
         $validated = $request->validate([
